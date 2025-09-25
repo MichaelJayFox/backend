@@ -8,6 +8,7 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
+// Сохранить текст (v1.0)
 app.post('/save', (req, res) => {
     const text = req.body.text;
     
@@ -22,6 +23,24 @@ app.post('/save', (req, res) => {
             return res.status(500).send('Error saving data');
         }
         res.send('Сохранено');
+    });
+});
+
+// Прочитать данные из файла (v2.0)
+app.get('/read', (req, res) => {
+    fs.readFile('data.txt', 'utf8', (err, data) => {
+        if (err) {
+            if (err.code === 'ENOENT') {
+                return res.send('File is empty or does not exist');
+            }
+            return res.status(500).send('Error reading file');
+        }
+        
+        if (!data) {
+            return res.send('File is empty');
+        }
+        
+        res.send(data);
     });
 });
 
